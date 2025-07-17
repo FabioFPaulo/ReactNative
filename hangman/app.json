@@ -23,13 +23,11 @@
       "edgeToEdgeEnabled": true
     },
     "web": {
-      "output": "static",
-      "bundler": "metro"
+      "favicon": "./assets/favicon.png",
+      "template": "./index.html"
     },
-    "extra": {
-      "router": {
-        "baseUrl": "/ReactJS/hangman/"
-      }
+    "experiments": {
+      "baseUrl": "/ReactNative/hangman/"
     }
   }
 }
