@@ -23,8 +23,7 @@
       "edgeToEdgeEnabled": true
     },
     "web": {
-      "favicon": "./assets/favicon.png",
-      "template": "./index.html"
+      "favicon": "./assets/favicon.png"
     },
     "experiments": {
       "baseUrl": "/ReactNative/hangman/"
