@@ -23,11 +23,13 @@
       "edgeToEdgeEnabled": true
     },
     "web": {
-      "favicon": "./assets/favicon.png",
-      "output": "static"
+      "favicon": "./assets/favicon.png"
     },
     "experiments": {
       "baseUrl": "/ReactNative/hangman/"
-    }
+    },
+    "plugins": [
+      "expo-router"
+    ]
   }
 }
