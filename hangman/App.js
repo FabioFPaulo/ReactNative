@@ -1,7 +1,45 @@
 import { StatusBar } from "expo-status-bar";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useEffect, useState } from "react";
+import {
+    Image,
+    StyleSheet,
+    Text,
+    TouchableHighlight,
+    View,
+} from "react-native";
+import { ModalNovoJogo } from "./components/ModalNovoJogo";
 
 export default function App() {
+    const palavras = [
+        "PANELA",
+        "DINOSSAURO",
+        "PINCEL",
+        "CASA",
+        "SOFA",
+        "AVESTRUZ",
+    ];
+
+    const [letras, setLetras] = useState(palavras[0].split(""));
+    const [letrasUtilizadas, setLetrasUtilizadas] = useState([]);
+    const [estaVisibel, setEstaVisibel] = useState(false);
+    const [conseguiuGanhar, setConseguiuGanhar] = useState(false);
+    const [erros, setErros] = useState(6);
+
+    const forca = [
+        require("./assets/imgs/hangman1.png"),
+        require("./assets/imgs/hangman2.png"),
+        require("./assets/imgs/hangman3.png"),
+        require("./assets/imgs/hangman4.png"),
+        require("./assets/imgs/hangman5.png"),
+        require("./assets/imgs/hangman6.png"),
+        require("./assets/imgs/hangman7.png"),
+    ];
+    const [forcaAtiva, setForcaAtiva] = useState(0);
+
+    function getRandomInt(max) {
+        return Math.floor(Math.random() * max);
+    }
+
     const caracteres = [
         "A",
         "B",
@@ -31,38 +69,108 @@ export default function App() {
         "Z",
     ];
 
+    const aoClicarLetra = (letra) => {
+        setLetrasUtilizadas([...letrasUtilizadas, letra]);
+
+        // verificar se a palavra não existe no array de letras
+        if (!letras.includes(letra)) {
+            setForcaAtiva(forcaAtiva + 1);
+            setErros(erros + 1);
+        }
+    };
+
+    const foiUtilizada = (letra) => {
+        return letrasUtilizadas.includes(letra);
+    };
+
+    useEffect(() => {
+        const integer = getRandomInt(palavras.length);
+
+        setLetras(palavras[integer].split(""));
+    }, []);
+
+    const mostrar = letras.map((x) => (letrasUtilizadas.includes(x) ? x : "_"));
+
+    useEffect(() => {
+        if (erros === 6) {
+            setConseguiuGanhar(false);
+            setEstaVisibel(true);
+        }
+    }, [erros]);
+
+    useEffect(() => {
+        if (!mostrar.includes("_")) {
+            setConseguiuGanhar(true);
+            setEstaVisibel(true);
+        }
+    }, [letrasUtilizadas]);
+
+    const resetJogo = () => {
+        setErros(0);
+        setLetrasUtilizadas([]);
+        setForcaAtiva(0);
+
+        const integer = getRandomInt(palavras.length);
+
+        setLetras(palavras[integer].split(""));
+        setEstaVisibel(false);
+    };
+
     return (
         <View style={styles.container}>
-            <StatusBar style="auto" />
-            <View style={styles.cabecalho}>
-                <Text style={styles.cabecalhoTexto}>Jogo da Forca</Text>
+            <StatusBar style="light" />
+            <View style={styles.titulo}>
+                <Text style={styles.tituloTexto}>Jogo da Forca</Text>
             </View>
-            <View style={styles.corpo}>
-                <Image
-                    style={styles.imagem}
-                    source={require("./assets/imgs/hangman1.png")}
-                    resizeMode="contain"
-                />
-                <Text>Letras utilizadas: A, B, C</Text>
+            <View style={styles.conteudo}>
+                <View style={styles.imagemCaixa}>
+                    <Image
+                        style={styles.imagem}
+                        source={forca[forcaAtiva]}
+                        resizeMode="contain"
+                    />
+                </View>
+
+                <View style={styles.letrasUsadas}>
+                    <Text>
+                        Letras utilizadas: {letrasUtilizadas.join(", ")}
+                    </Text>
+                </View>
+
                 <View style={styles.adivinhaPalavraCaixa}>
-                    <Text style={styles.letraCaixa}>E</Text>
-                    <Text style={styles.letraCaixa}>L</Text>
-                    <Text style={styles.letraCaixa}>E</Text>
-                    <Text style={styles.letraCaixa}>F</Text>
-                    <Text style={styles.letraCaixa}>A</Text>
-                    <Text style={styles.letraCaixa}>N</Text>
-                    <Text style={styles.letraCaixa}>T</Text>
-                    <Text style={styles.letraCaixa}>E</Text>
+                    {mostrar.map((letra, index) => (
+                        <View key={index} style={styles.letraCaixa}>
+                            <Text style={styles.letraTexto}>
+                                {letra === "_" ? "" : letra}
+                            </Text>
+                        </View>
+                    ))}
                 </View>
             </View>
-
-            <View style={styles.rodape}>
-                {caracteres.map((caracter) => (
-                    <TouchableOpacity key={caracter} style={styles.caracter}>
-                        <Text>{caracter}</Text>
-                    </TouchableOpacity>
+            <View style={styles.letras}>
+                {caracteres.map((e, index) => (
+                    <TouchableHighlight
+                        activeOpacity={0.3}
+                        underlayColor="#666"
+                        onPress={() => aoClicarLetra(e)}
+                        disabled={foiUtilizada(e)}
+                        style={{
+                            ...styles.caracterCaixa,
+                            opacity: foiUtilizada(e) ? 0.3 : 1,
+                        }}
+                        key={index}
+                    >
+                        <View>
+                            <Text>{e}</Text>
+                        </View>
+                    </TouchableHighlight>
                 ))}
             </View>
+            <ModalNovoJogo
+                isVisible={estaVisibel}
+                conseguiuGanhar={conseguiuGanhar}
+                resetJogo={resetJogo}
+            />
         </View>
     );
 }
@@ -73,28 +181,33 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff",
         alignItems: "center",
     },
-    cabecalho: {
+    titulo: {
+        paddingTop: 75,
+        paddingBottom: 50,
         backgroundColor: "#333",
         width: "100%",
         alignItems: "center",
-        padding: 50,
     },
-    corpo: {
+    tituloTexto: {
+        fontSize: 26,
+        color: "#fff",
+        fontWeight: "bold",
+    },
+    conteudo: {
         flex: 1,
         width: "100%",
-        alignItems: "center",
     },
-    rodape: {
+    letras: {
         flexDirection: "row",
         paddingHorizontal: 20,
         paddingVertical: 40,
         backgroundColor: "#fff",
         width: "100%",
-        alignItems: "stretch",
         flexWrap: "wrap",
+        alignItems: "stretch",
         justifyContent: "center",
     },
-    caracter: {
+    caracterCaixa: {
         backgroundColor: "#fff",
         width: 35,
         height: 35,
@@ -105,13 +218,14 @@ const styles = StyleSheet.create({
         marginBottom: 5,
         marginHorizontal: 5,
     },
-    cabecalhoTexto: {
-        fontSize: 26,
-        color: "#fff",
-        fontWeight: "bold",
-    },
-    imagem: {
+    imagemCaixa: {
+        width: "100%",
         height: 200,
+    },
+
+    imagem: {
+        width: "100%",
+        height: "100%",
     },
     adivinhaPalavraCaixa: {
         flexDirection: "row",
@@ -123,9 +237,13 @@ const styles = StyleSheet.create({
     letraCaixa: {
         width: 35,
         height: 35,
-        textAlign: "center",
+        justifyContent: "center",
+        alignItems: "center",
         borderBottomWidth: 3,
         borderBottomColor: "#ccc",
         marginHorizontal: 3,
+    },
+    letrasUsadas: {
+        paddingHorizontal: 20,
     },
 });
