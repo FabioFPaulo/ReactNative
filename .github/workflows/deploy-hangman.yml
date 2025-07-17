@@ -16,33 +16,36 @@ permissions:
     id-token: write
 
 jobs:
+    # Single deploy job since we're just deploying
     deploy:
+        environment:
+            name: github-pages
+            url: ${{ steps.deployment.outputs.page_url }}
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout Repository
+            - name: Checkout
               uses: actions/checkout@v4
-
-            - name: Setup Node.js
+            - name: Set up Node
               uses: actions/setup-node@v4
               with:
-                  node-version: "20" # Use a versão do Node.js que suas apps precisam
-
-            - name: Install Dependencies for App Um
+                  node-version: 20
+                  cache: "npm"
+            - name: Install dependencies
               run: npm install
-              working-directory: ./hangman # Garante que o comando npm seja executado na pasta correta
+              working-directory: ./hangman
 
-            - name: Build App Um
+            - name: Build
               run: npm run build:web
               working-directory: ./hangman
 
             - name: Setup Pages
-              uses: actions/configure-pages@v5
+              uses: actions/configure-pages@v4
 
-            - name: Upload Artifact
+            - name: Upload artifact
               uses: actions/upload-pages-artifact@v3
               with:
-                  path: "./hangman/dist" # O caminho da pasta de build da sua aplicação
-
+                  # Upload dist folder
+                  path: "./hangman/dist"
             - name: Deploy to GitHub Pages
               id: deployment
               uses: actions/deploy-pages@v4
