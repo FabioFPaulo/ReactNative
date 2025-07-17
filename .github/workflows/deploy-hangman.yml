@@ -9,6 +9,12 @@ on:
             - "hangman/**" # Dispara o workflow apenas quando há mudanças na pasta app-um
     workflow_dispatch: # Permite disparar o workflow manualmente
 
+# Sets the GITHUB_TOKEN permissions to allow deployment to GitHub Pages
+permissions:
+    contents: read
+    pages: write
+    id-token: write
+
 jobs:
     deploy:
         runs-on: ubuntu-latest
