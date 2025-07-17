@@ -1,0 +1,42 @@
+# .github/workflows/deploy-app-um.yml
+name: Deploy Hangman to github pages
+
+on:
+    push:
+        branches:
+            - main # Ou a branch principal do seu repositório
+        paths:
+            - "hangman/**" # Dispara o workflow apenas quando há mudanças na pasta app-um
+    workflow_dispatch: # Permite disparar o workflow manualmente
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "20" # Use a versão do Node.js que suas apps precisam
+
+            - name: Install Dependencies for App Um
+              run: npm install
+              working-directory: ./hangman # Garante que o comando npm seja executado na pasta correta
+
+            - name: Build App Um
+              run: npm run build:web
+              working-directory: ./hangman
+
+            - name: Setup Pages
+              uses: actions/configure-pages@v5
+
+            - name: Upload Artifact
+              uses: actions/upload-pages-artifact@v3
+              with:
+                  path: "./hangman/dist" # O caminho da pasta de build da sua aplicação
+
+            - name: Deploy to GitHub Pages
+              id: deployment
+              uses: actions/deploy-pages@v4
