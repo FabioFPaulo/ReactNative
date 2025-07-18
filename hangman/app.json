@@ -28,6 +28,9 @@
       "output": "static",
       "bundler": "metro"
     },
+    "experiments": {
+      "baseUrl": "/ReactNative/hangman"
+    },
     "plugins": [
       "expo-router"
     ]
