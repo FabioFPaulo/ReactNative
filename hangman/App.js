@@ -7,7 +7,7 @@ import {
     TouchableHighlight,
     View,
 } from "react-native";
-import { ModalNovoJogo } from "./hangman/components/ModalNovoJogo";
+import { ModalNovoJogo } from "./components/ModalNovoJogo";
 
 export default function App() {
     const palavras = [
@@ -26,13 +26,13 @@ export default function App() {
     const [erros, setErros] = useState(6);
 
     const forca = [
-        require("../assets/imgs/hangman1.png"),
-        require("../assets/imgs/hangman2.png"),
-        require("../assets/imgs/hangman3.png"),
-        require("../assets/imgs/hangman4.png"),
-        require("../assets/imgs/hangman5.png"),
-        require("../assets/imgs/hangman6.png"),
-        require("../assets/imgs/hangman7.png"),
+        require("./assets/imgs/hangman1.png"),
+        require("./assets/imgs/hangman2.png"),
+        require("./assets/imgs/hangman3.png"),
+        require("./assets/imgs/hangman4.png"),
+        require("./assets/imgs/hangman5.png"),
+        require("./assets/imgs/hangman6.png"),
+        require("./assets/imgs/hangman7.png"),
     ];
     const [forcaAtiva, setForcaAtiva] = useState(0);
 
