@@ -7,7 +7,7 @@ import {
     TouchableHighlight,
     View,
 } from "react-native";
-import { ModalNovoJogo } from "../../hangman/components/ModalNovoJogo";
+import { ModalNovoJogo } from "./hangman/components/ModalNovoJogo";
 
 export default function App() {
     const palavras = [
