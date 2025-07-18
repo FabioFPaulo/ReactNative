@@ -39,9 +39,6 @@ jobs:
               run: npm run build:web
               working-directory: ./hangman
 
-            - name: Create .nojekyll file
-              run: touch ./hangman/dist/.nojekyll # Ensure Jekyll is disabled
-
             - name: Setup Pages
               uses: actions/configure-pages@v4
 
@@ -50,6 +47,7 @@ jobs:
               with:
                   # Upload dist folder
                   path: "./hangman/dist"
+
             - name: Deploy to GitHub Pages
               id: deployment
               uses: actions/deploy-pages@v4
